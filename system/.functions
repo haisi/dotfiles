@@ -1,0 +1,139 @@
+#!/usr/bin/env bash
+
+lcc() {
+    # Copies previews command
+    fc -ln -1 | awk "{\$1=\$1}1" ORS="" | pbcopy
+}
+
+list_port_at() {
+    lsof -i :$1
+}
+
+kill_port_at() {
+    lsof -t -i :$1 | xargs kill -9
+}
+
+j15 () {
+	# Switch to Java 15
+    /usr/libexec/java_home -V
+    export JAVA_HOME=`/usr/libexec/java_home -v 15`
+    java -version
+}
+
+j8 () {
+	# Switch to Java 1.8
+    /usr/libexec/java_home -V
+    export JAVA_HOME=`/usr/libexec/java_home -v 1.8`
+    java -version
+}
+
+adb_screenshot() {
+    SCREEN_NAME="$(date +"%Y-%m-%d_%H-%M-%S")_$1.png"
+    SIZE_PERCENTAGE="100%"
+    
+    if [ ! -z "$2" ]; then
+        SIZE_PERCENTAGE=$2
+    fi
+    
+    adb exec-out screencap -p > tmp.png
+    convert tmp.png -resize $SIZE_PERCENTAGE $SCREEN_NAME
+    rm tmp.png
+
+    echo $(identify $SCREEN_NAME)
+    echo $SCREEN_NAME
+}
+
+android_convert() {
+    #---------------------------------------------------------------
+    # Given an xxhdpi image or an App Icon (launcher), this script
+    # creates different dpis resources and the necessary folders
+    # if they don't exist
+    #
+    # Place this script, as well as the source image, inside res
+    # folder and execute it passing the image filename as argument
+    #
+    # Example:
+    # ./drawables_dpis_creation.sh ic_launcher.png
+    # OR
+    # ./drawables_dpis_creation.sh my_cool_xxhdpi_image.png
+    #
+    # Copyright (c) 2016 Ricardo Romao.
+    # This free software comes with ABSOLUTELY NO WARRANTY and
+    # is distributed under GNU GPL v3 license.
+    #---------------------------------------------------------------
+    if [ $# -eq 0 ]; then
+        echo "No arguments supplied"
+    else if [ -f "$1" ]; then
+        echo " Creating different dimensions (dips) of "$1" ..."
+        mkdir -p drawable-xxxhdpi
+        mkdir -p drawable-xxhdpi
+        mkdir -p drawable-xhdpi
+        mkdir -p drawable-hdpi
+        mkdir -p drawable-mdpi
+        if [ $1 = "ic_launcher.png" ]; then
+            echo "  App icon detected"
+            convert ic_launcher.png -resize 144x144 drawable-xxhdpi/ic_launcher.png
+            convert ic_launcher.png -resize 96x96 drawable-xhdpi/ic_launcher.png
+            convert ic_launcher.png -resize 72x72 drawable-hdpi/ic_launcher.png
+            convert ic_launcher.png -resize 48x48 drawable-mdpi/ic_launcher.png
+            rm -i ic_launcher.png
+        else
+            convert $1 -resize 75% drawable-xxhdpi/$1
+            convert $1 -resize 50% drawable-xhdpi/$1
+            convert $1 -resize 38% drawable-hdpi/$1
+            convert $1 -resize 25% drawable-mdpi/$1
+            cp $1 drawable-xxxhdpi/$1
+        fi
+    echo "Done"
+    else
+        echo "$1 not found."
+    fi
+    fi
+}
+
+# Create a new directory and enter it
+function mkd() {
+	mkdir -p "$@" && cd "$_";
+}
+
+# Determine size of a file or total size of a directory
+function fs() {
+	if du -b /dev/null > /dev/null 2>&1; then
+		local arg=-sbh;
+	else
+		local arg=-sh;
+	fi
+	if [[ -n "$@" ]]; then
+		du $arg -- "$@";
+	else
+		du $arg .[^.]* ./*;
+	fi;
+}
+
+# Create a data URL from a file
+function dataurl() {
+	local mimeType=$(file -b --mime-type "$1");
+	if [[ $mimeType == text/* ]]; then
+		mimeType="${mimeType};charset=utf-8";
+	fi
+	echo "data:${mimeType};base64,$(openssl base64 -in "$1" | tr -d '\n')";
+}
+
+# TODO use an npm package instead of python
+# Start an HTTP server from a directory, optionally specifying the port
+function server() {
+	local port="${1:-8000}";
+	sleep 1 && open "http://localhost:${port}/" &
+	# Set the default Content-Type to `text/plain` instead of `application/octet-stream`
+	# And serve everything as UTF-8 (although not technically correct, this doesn’t break anything for binary files)
+	python -c $'import SimpleHTTPServer;\nmap = SimpleHTTPServer.SimpleHTTPRequestHandler.extensions_map;\nmap[""] = "text/plain";\nfor key, value in map.items():\n\tmap[key] = value + ";charset=UTF-8";\nSimpleHTTPServer.test();' "$port";
+}
+
+# TODO turn into alias for `tree` ?
+# `tre` is a shorthand for `tree` with hidden files and color enabled, ignoring
+# the `.git` directory, listing directories first. The output gets piped into
+# `less` with options to preserve color and line numbers, unless the output is
+# small enough for one screen.
+function tre() {
+	tree -aC -I '.git|node_modules|bower_components' --dirsfirst "$@" | less -FRNX;
+}
