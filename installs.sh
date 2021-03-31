@@ -31,7 +31,10 @@ brew cask install visual-studio-code
 brew cask install android-studio
 brew install --cask android-file-transfer
 brew install --cask android-platform-tools
-brew install scrcpy #
+brew install scrcpy # mirrors Android device
+brew install --cask drawio
+brew install --cask mactex # LaTeX
+brew install --cask skim # PDF reader used for TeXiFy IntelliJ plugin
 
 brew cask install google-cloud-sdk
 brew cask install docker
