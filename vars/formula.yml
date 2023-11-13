@@ -8,3 +8,4 @@ formula:
   wget:
   git:
   httpie:
+  zsh:

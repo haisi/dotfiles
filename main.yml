@@ -11,3 +11,8 @@
     - include: tasks/packages.yml
       tags:
         - packages
+
+    
+    - include: tasks/shells.yml
+      tags:
+        - shells
