@@ -1,0 +1,5 @@
+= My automated Dev setup
+
+== Start
+
+1. Install
