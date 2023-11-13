@@ -1,0 +1,13 @@
+---
+- name: Playbook to manage Haisi's dotfiles (https://github.com/haisi/dotfiles)
+  hosts: localhost
+  connection: local
+  tasks:
+    - name: load custom vars
+      include_vars: ../vars.yml
+      tags:
+        - always
+ 
+    - include: tasks/packages.yml
+      tags:
+        - packages

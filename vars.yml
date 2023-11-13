@@ -1,0 +1,4 @@
+---
+dock_icon_size: 40
+sudo_without_password: false
+use_dnscrypt: true
