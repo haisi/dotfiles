@@ -1,5 +1,9 @@
 ---
 casks:
   google-chrome:
-  visual-studio-code:
+  iterm2:
+  itsycal: # Calendar inside status bar
+  menumeters: # Show CPU, network, RAM, etc. in status bar
+  spectacle: # Move and resize windows with ease
   spotify:
+  visual-studio-code:
