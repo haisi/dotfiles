@@ -27,7 +27,7 @@ case "$(uname -s)" in
         # set macos defaults
         echo "[i] Set some specific macOS settings"
         set +e
-        ./config/macos.bash
+        ./macos.bash
         set -e
         ;;
 
