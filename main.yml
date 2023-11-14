@@ -16,3 +16,18 @@
     - include: tasks/shells.yml
       tags:
         - shells
+    
+  handlers:
+  - name: Kill Dock
+    command: killall Dock
+
+  - name: Kill Finder
+    command: killall Finder
+
+  - name: Kill Safari
+    command: killall Safari
+    ignore_errors: yes
+
+  - name: Kill Terminal
+    command: killall Terminal
+    ignore_errors: yes
