@@ -8,4 +8,5 @@ formula:
   wget:
   git:
   httpie:
+  gnu-sed:
   zsh:
