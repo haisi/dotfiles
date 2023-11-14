@@ -1,8 +1,8 @@
 [user]
 	name = Hasan Selman Kara
-	email = <MY-EMAIL-ADDRESS>
+	email = hasan.selman.kara@gmail.com
 [core]
-	excludesfile = /Users/haisi/git/.gitignore_global
+	excludesfile = ~/.gitignore_global
 	autocrlf = input
 [alias]
   unstage = reset -q HEAD --
