@@ -10,3 +10,10 @@
     - { src: "~/my-mac/dotfiles/.functions", dest: "~/.functions"}
     - { src: "~/my-mac/dotfiles/.path", dest: "~/.path"}
     - { src: "~/my-mac/dotfiles/.zshrc", dest: "~/.zshrc"}
+
+- name: copy files
+  copy:
+    src: "{{ item.src }}"
+    dest: "{{ item.dest }}"
+  loop:
+    - { src: "~/my-mac/dotfiles/spectacle.json", dest: "~/Library/Application\ Support/Spectacle/Shortcuts.json"}
