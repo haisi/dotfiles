@@ -12,7 +12,7 @@ case "$(uname -s)" in
           xcode-select --install
         fi
 
-        # install homwbrew
+        # install homebrew
         if [[ ! -x /usr/local/bin/brew ]]; then
           echo "[i] Install Homebrew"
           /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
@@ -23,6 +23,50 @@ case "$(uname -s)" in
             echo "[i] Install Ansible"
             brew install ansible
         fi
+
+        # set macos defaults
+        echo "[i] Set some specific macOS settings"
+        set +e
+        ./config/macos.bash
+        set -e
+        ;;
+
+        Linux)
+        if [ -f /etc/os-release ]
+            then
+                . /etc/os-release
+
+                # actually, no Linux support implemented yet
+
+                case "$ID" in
+                    debian | ubuntu)
+                        if [[ ! -x /usr/bin/ansible ]]; then
+                            echo "[i] Install Ansible"
+                            sudo apt-get install -y ansible
+                        fi
+                        ;;
+
+                    arch)
+                        if [[ ! -x /usr/bin/ansible ]]; then
+                            echo "[i] Install Ansible"
+                            sudo pacman -S ansible --noconfirm
+                        fi
+                        ;;
+
+                    *)
+                        echo "[!] Unsupported Linux Distribution: $ID"
+                        exit 1
+                        ;;
+                esac
+            else
+                echo "[!] Unsupported Linux Distribution"
+                exit 1
+            fi
+        ;;
+    *)
+        echo "[!] Unsupported OS"
+        exit 1
+        ;;
 esac
 
 # Run main playbook
