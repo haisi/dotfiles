@@ -1,6 +1,6 @@
 ---
 - name: "Configure Gnome"
-  command: {{ item }}
+  command: "{{ item }}"
   with_items:
     - gsettings set org.gnome.desktop.screensaver lock-enabled false
     - gsettings set org.gnome.desktop.wm.keybindings switch-to-workspace-left "['']"
