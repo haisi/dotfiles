@@ -1,0 +1,21 @@
+---
+- name: "Configure Gnome"
+  command: {{ item }}
+  with_items:
+    - gsettings set org.gnome.desktop.screensaver lock-enabled false
+    - gsettings set org.gnome.desktop.wm.keybindings switch-to-workspace-left "['']"
+    - gsettings set org.gnome.desktop.wm.keybindings switch-to-workspace-right "['']"
+    - gsettings set org.gnome.desktop.wm.keybindings cycle-group "['']"
+    - gsettings set org.gnome.desktop.wm.keybindings begin-move "['']"
+    - gsettings set org.gnome.desktop.wm.keybindings begin-resize "['']"
+    - gsettings set org.gnome.desktop.wm.keybindings panel-main-menu "['']"
+    - gsettings set org.gnome.desktop.input-sources sources "[('xkb', 'ch')]"
+    - gsettings set org.gnome.desktop.datetime automatic-timezone true
+    - timedatectl set-timezone Europe/Zurich
+    - gsettings set org.gnome.desktop.lockdown disable-lock-screen true
+    - gsettings set org.gnome.desktop.screensaver ubuntu-lock-onsuspend false
+    - gsettings set org.gnome.desktop.session idle-delay 0
+    - gsettings set org.gnome.shell favorite-apps "['org.gnome.Nautilus.desktop', 'google-chrome.desktop', 'firefox.desktop', 'jetbrains-idea', 'code.desktop', 'gnome-control-center.desktop']"
+  ignore_errors: yes
+  become: yes
+  become_user: '{{ global_vars.user_session }}'

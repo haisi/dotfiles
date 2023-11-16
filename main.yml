@@ -24,6 +24,11 @@
       when: ansible_os_family == "Darwin"
       tags:
         - macos_defaults
+
+    - include: tasks/gnome_defaults.yml
+      when: ansible_os_family == "Debian"
+      tags:
+        - gnome_defaults
     
   handlers:
   - name: Kill Dock
