@@ -1,5 +1,5 @@
 ---
-- name: Playbook to manage Haisi's dotfiles (https://github.com/haisi/dotfiles)
+- name: Playbook to manage Haisi's Dev Setup
   hosts: localhost
   connection: local
   tasks:
@@ -16,10 +16,14 @@
       tags:
         - packages
 
-    
     - include: tasks/shells.yml
       tags:
         - shells
+
+    - include: tasks/macos_defaults.yml
+      when: ansible_os_family == "Darwin"
+      tags:
+        - macos_defaults
     
   handlers:
   - name: Kill Dock

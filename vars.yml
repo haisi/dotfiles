@@ -1,5 +1,5 @@
 ---
 dock_icon_size: 40
 sudo_without_password: false
-use_dnscrypt: true
+macos_auto_correct: "false"
 login_shell: /usr/local/bin/zsh
