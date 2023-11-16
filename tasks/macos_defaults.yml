@@ -28,6 +28,8 @@
     - { key: "FXPreferredViewStyle", type: "string", value: "Nlsv" }
     # Disable the warning before emptying the Trash
     - { key: "WarnOnEmptyTrash", type: "bool", value: "false" }
+    # Show hidden files like .dotfiles
+    - { key: "AppleShowAllFiles", type: "bool", value: "true" }
   notify:
     - Kill Finder
 
