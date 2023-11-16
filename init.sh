@@ -69,6 +69,10 @@ case "$(uname -s)" in
         ;;
 esac
 
+# Install requirements, i.e. third party Ansible modules for mac
+echo "[i] Install ansible-galaxy modules"
+ansible-galaxy install -r requirements.yml
+
 # Run main playbook
 echo "[i] Run Playbook"
 ansible-playbook main.yml --ask-become-pass
