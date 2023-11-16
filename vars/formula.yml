@@ -1,12 +1,16 @@
 ---
 formula:
   ack:
-  htop:
-  jq:
-  tree: # Terminal: Shows tree structure of directory
   cloc: # Terminal: lines of code counter
-  wget:
   git:
-  httpie:
   gnu-sed:
+  htop:
+  httpie:
+  jq:
+  shellcheck:
+  ssh-copy-id:
+  tree: # Terminal: Shows tree structure of directory
+  watch:
+  wget:
+  zsh-autosuggestions:
   zsh:
