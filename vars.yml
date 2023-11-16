@@ -1,6 +1,31 @@
 ---
 dock_icon_size: 40
+#---
+#https://github.com/geerlingguy/ansible-collection-mac/blob/master/roles/dock/README.md
+dockutil_homebrew_cask: hpedrorodrigues/tools/dockutil
+dockutil_install: true
+dockitems_remove:
+  - Launchpad
+  - TV
+  - FaceTime
+  - Maps
+  - Mail
+  - Freeform
+  - Music
+  - Podcasts
+  - Safari
+  - Photos
+  - Contacts
+dockitems_persist:
+  - name: Spotify
+    path: "/Applications/Spotify.app/"
+  - name: Visual Studio Code
+    path: "/Applications/Visual Studio Code.app/"
+  - name: IntelliJ IDEA CE
+    path: "/Applications/IntelliJ IDEA CE.app/"
+  - name: Google Chrome
+    path: "/Applications/Google Chrome.app/"
+#---
 sudo_without_password: false
 macos_auto_correct: "false"
 login_shell: /usr/local/bin/zsh
-// TODO github name and email search and replace

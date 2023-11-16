@@ -2,6 +2,10 @@
 - name: Playbook to manage Haisi's Dev Setup
   hosts: localhost
   connection: local
+
+  vars_files:
+    - vars.yml
+
   tasks:
     - name: load custom vars
       include_vars: ../vars.yml
@@ -44,3 +48,10 @@
   - name: Kill Terminal
     command: killall Terminal
     ignore_errors: yes
+
+
+  roles:
+#    - role: geerlingguy.mac.homebrew
+#      tags: ["dock"]
+    - role: geerlingguy.mac.dock
+      tags: ["dock"]
