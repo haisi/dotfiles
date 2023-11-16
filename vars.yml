@@ -3,3 +3,4 @@ dock_icon_size: 40
 sudo_without_password: false
 macos_auto_correct: "false"
 login_shell: /usr/local/bin/zsh
+// TODO github name and email search and replace

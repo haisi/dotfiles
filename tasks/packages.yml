@@ -14,37 +14,89 @@
   tags:
     - brew_cask
 
+- name: Include APT package list
+  include_vars: vars/apt.yml
+  tags:
+    - apt
+
+- name: Include NPM package list
+  include_vars: vars/npm.yml
+  tags:
+    - npm
+
+- name: Include python package list
+  include_vars: vars/pip.yml
+  tags:
+    - pip
+
 - block:
-  - name: Update/Upgrade Homebrew
-    homebrew:
-      update_homebrew: true
-      upgrade_all: true
-    tags:
-      - brew_taps
-      - brew_formula
-      - brew_cask
+    - name: Update/Upgrade Homebrew
+      homebrew:
+        update_homebrew: true
+        upgrade_all: true
+      tags:
+        - brew_taps
+        - brew_formula
+        - brew_cask
 
-  - name: Manage taps
-    homebrew_tap:
-      name: "{{ item.key }}"
-      state: "{{ item.value.state | default('present') }}"
-    with_dict: "{{taps}}"
-    tags:
-      - brew_taps
+    - name: Manage taps
+      homebrew_tap:
+        name: "{{ item.key }}"
+        state: "{{ item.value.state | default('present') }}"
+      with_dict: "{{taps}}"
+      tags:
+        - brew_taps
 
-  - name: Manage formula
-    homebrew:
-      name: "{{ item.key }}"
-      install_options: "{{ item.value.options | default(omit) }}"
-      state: "{{ item.value.state | default('present') }}"
-    with_dict: "{{formula}}"
-    tags:
-      - brew_formula
+    - name: Manage formula
+      homebrew:
+        name: "{{ item.key }}"
+        install_options: "{{ item.value.options | default(omit) }}"
+        state: "{{ item.value.state | default('present') }}"
+      with_dict: "{{formula}}"
+      tags:
+        - brew_formula
 
-  - name: Manage casks
-    homebrew_cask:
-      name: "{{ item.key }}"
-      state: "{{ item.value.state | default('present') }}"
-    with_dict: "{{casks}}"
-    tags:
-      - brew_cask
+    - name: Manage casks
+      homebrew_cask:
+        name: "{{ item.key }}"
+        state: "{{ item.value.state | default('present') }}"
+      with_dict: "{{casks}}"
+      tags:
+        - brew_cask
+
+  when: ansible_os_family == "Darwin"
+
+- block:
+    - name: Update/Upgrade apt
+      apt:
+        update_cache: true
+        upgrade: dist
+
+    - name: Manage apt packages
+      apt:
+        name: "{{ item.key }}"
+        state: "{{ item.value.state | default('latest') }}"
+      with_dict: "{{apt}}"
+
+  become: true
+  when: ansible_os_family == "Debian"
+  tags: apt
+
+- name: Manage python packages
+  pip:
+    name: "{{ item.key }}"
+    state: "{{ item.value.state | default('present') }}"
+    executable: "{{ item.value.executable | default('pip3') }}"
+  with_dict: "{{pip}}"
+  tags:
+    - pip
+
+- name: Manage NPM packages
+  npm:
+    name: "{{ item.key }}"
+    state: "{{ item.value.state | default('present') }}"
+    global: true
+    executable: "{{ item.value.executable | default('npm') }}"
+  with_dict: "{{npm}}"
+  tags:
+    - npm

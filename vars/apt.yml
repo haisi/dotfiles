@@ -1,0 +1,14 @@
+---
+apt:
+  # CLI
+  ack:
+  ansible:
+  htop:
+  tree:
+  wget:
+  zsh:
+
+  # GUI
+  chromium-browser:
+  chromium-codecs-ffmpeg-extra:
+  vlc:
