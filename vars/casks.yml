@@ -1,5 +1,6 @@
 ---
 casks:
+  calibre: # itunes for ebooks
   google-chrome:
   iterm2:
   itsycal: # Calendar inside status bar
