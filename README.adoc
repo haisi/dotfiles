@@ -95,6 +95,16 @@ ansible-playbook main.yml --tags "brew_formula,brew_cask"
 . Configure menumeters
 . Configure IntelliJ
 
+Through app store
+echo "Install the following tools manually through the app store"
+echo -e '\e]8;;https://apps.apple.com/us/app/gestimer/id990588172\aGestimer\e]8;;\a'
+echo -e '\e]8;;https://apps.apple.com/us/app/gestimer/id1355679052\aDropover\e]8;;\a' #
+
+Through chrome web store
+echo -e '\e]8;;https://chrome.google.com/webstore/detail/surfingkeys/gfbliohnnapiefjpjlpjnehglfpaknnc\aSurfingkeys\e]8;;\a'
+echo -e '\e]8;;https://chrome.google.com/webstore/detail/ublock-origin/cjpalhdlnbpafiamejdnhcphjbkeiagm?hl=en\auBlockOrigin\e]8;;\a'
+echo -e '\e]8;;https://chrome.google.com/webstore/detail/json-formatter/bcjindcccaagfpapjjmafapmmgkkhgoa?hl=en\aJSONFormatter\e]8;;\a'
+
 image::docs/enable_spectacle.png[]
 
 === End State
