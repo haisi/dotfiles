@@ -17,9 +17,20 @@ in case you would like to adapt a similar setup-process as me.
 
 1. `git clone git@github.com:haisi/dotfiles.git ~/my-dev-setup && ~/my-dev-setup/init.sh`
 
+:toc:
+
 == Overriding Defaults
 
 See `./vars.yml`
+
+== What is Ansible
+
+Ansible is an open-source automation tool used for configuration management and task automation.
+It simplifies and documents repetitive tasks by allowing users to automate the provisioning and management of systems and applications **through declarative code** called playbooks, written in YAML.
+
+Ansible uses modules to carry out tasks. Modules are small programs that perform specific actions (e.g., installing packages, copying files, restarting services) on target machines.
+
+Ansible is **idempotent**, meaning it only changes the system's state if necessary. It checks the current state against the desired state and applies changes only when there's a divergence.
 
 == Tags
 
