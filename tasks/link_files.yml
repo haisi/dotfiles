@@ -4,12 +4,16 @@
     src: "{{ item.src }}"
     dest: "{{ item.dest }}"
     state: link
+    # force: yes required because .gitconfig file might already exist causing the link creation to fail
+    force: yes
   loop:
     - { src: "~/my-mac/dotfiles/.aliases", dest: "~/.aliases"}
     - { src: "~/my-mac/dotfiles/.exports", dest: "~/.exports"}
     - { src: "~/my-mac/dotfiles/.functions", dest: "~/.functions"}
     - { src: "~/my-mac/dotfiles/.path", dest: "~/.path"}
     - { src: "~/my-mac/dotfiles/.zshrc", dest: "~/.zshrc"}
+    - { src: "~/my-mac/dotfiles/.gitconfig", dest: "~/.gitconfig"}
+    - { src: "~/my-mac/dotfiles/.gitignore_global", dest: "~/.gitignore_global"}
 
 - name: copy files
   copy:
