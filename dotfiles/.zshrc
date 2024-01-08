@@ -1,22 +1,39 @@
 # If you come from bash you might have to change your $PATH.
+source ~/my-mac/powerlevel10k/powerlevel10k.zsh-theme
 export PATH=$(brew --prefix)/opt/findutils/libexec/gnubin:$HOME/bin:/usr/local/bin:$PATH:/usr/local/bin/kubectl
 export PATH="/usr/local/anaconda3/bin:$PATH"
 
-# Path to your oh-my-zsh installation.
-export ZSH="~/.oh-my-zsh"
+# History in cache directory:
+HISTSIZE=10000
+SAVEHIST=10000
+HISTFILE=~/.cache/zsh/history
 
-# Set name of the theme to load --- if set to "random", it will
-# load a random theme each time oh-my-zsh is loaded, in which case,
-# to know which specific one was loaded, run: echo $RANDOM_THEME
-# See https://github.com/ohmyzsh/ohmyzsh/wiki/Themes
-ZSH_THEME="lambda"
+# options
+unsetopt menu_complete
+unsetopt flowcontrol
+
+setopt prompt_subst
+setopt always_to_end
+setopt append_history
+setopt auto_menu
+setopt complete_in_word
+setopt extended_history
+setopt hist_expire_dups_first
+setopt hist_ignore_dups
+setopt hist_ignore_space
+setopt hist_verify
+setopt inc_append_history
+setopt share_history
+setopt HIST_IGNORE_ALL_DUPS  # don't record dupes in history
+setopt HIST_REDUCE_BLANKS
+
+autoload -U compinit
+compinit
 
 
-# Uncomment the following line to disable colors in ls.
-# DISABLE_LS_COLORS="true"
-
-# Uncomment the following line to disable auto-setting terminal title.
-# DISABLE_AUTO_TITLE="true"
+source ~/my-mac/dotfiles/zsh-plugins/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
+source ~/my-mac/dotfiles/zsh-plugins/zsh-autosuggestions/zsh-autosuggestions.zsh
+source ~/my-mac/dotfiles/zsh-plugins/zsh-history-substring-search/zsh-history-substring-search.zsh
 
 # Uncomment the following line to display red dots whilst waiting for completion.
 # Caution: this setting can cause issues with multiline prompts (zsh 5.7.1 and newer seem to work)
@@ -62,20 +79,6 @@ plugins=(git git-extra
     aliases
     )
 
-source $ZSH/oh-my-zsh.sh
-
-# User configuration
-
-# History file settings
-HISTFILE=~/.local/share/zsh/zsh_history
-setopt NO_HIST_VERIFY
-setopt APPEND_HISTORY # adds history
-setopt INC_APPEND_HISTORY SHARE_HISTORY  # adds history incrementally and share it across sessions
-setopt HIST_IGNORE_ALL_DUPS  # don't record dupes in history
-setopt HIST_REDUCE_BLANKS
-
-# export MANPATH="/usr/local/man:$MANPATH"
-
 # You may need to manually set your language environment
 # export LANG=en_US.UTF-8
 
@@ -85,16 +88,6 @@ setopt HIST_REDUCE_BLANKS
 # else
 #   export EDITOR='mvim'
 # fi
-
-# Compilation flags
-# export ARCHFLAGS="-arch x86_64"
-
-# Set personal aliases, overriding those provided by oh-my-zsh libs,
-# plugins, and themes. Aliases can be placed here, though oh-my-zsh
-# users are encouraged to define aliases within the ZSH_CUSTOM folder.
-# For a full list of active aliases, run `alias`.
-#
-# Example aliases
 
 # Load the shell dotfiles, and then some:
 # * ~/.path can be used to extend `$PATH`.

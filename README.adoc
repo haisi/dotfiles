@@ -15,7 +15,7 @@ in case you would like to adapt a similar setup-process as me.
 
 == Start
 
-1. `git clone git@github.com:haisi/dotfiles.git ~/my-dev-setup && ~/my-dev-setup/init.sh`
+1. `git clone https://github.com/haisi/dotfiles.git ~/my-dev-setup && ~/my-dev-setup/init.sh`
 
 :toc:
 
