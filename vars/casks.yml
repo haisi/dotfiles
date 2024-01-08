@@ -2,6 +2,7 @@
 casks:
   calibre: # itunes for ebooks
   google-chrome:
+  intellij-idea-ce:
   iterm2:
   itsycal: # Calendar inside status bar
   menumeters: # Show CPU, network, RAM, etc. in status bar
