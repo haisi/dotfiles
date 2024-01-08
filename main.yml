@@ -12,24 +12,24 @@
       tags:
         - always
 
-    - include: tasks/link_files.yml
+    - import_tasks: tasks/link_files.yml
       tags:
         - links
 
-    - include: tasks/packages.yml
+    - import_tasks: tasks/packages.yml
       tags:
         - packages
 
-    - include: tasks/shells.yml
+    - import_tasks: tasks/shells.yml
       tags:
         - shells
 
-    - include: tasks/macos_defaults.yml
+    - import_tasks: tasks/macos_defaults.yml
       when: ansible_os_family == "Darwin"
       tags:
         - macos_defaults
 
-    - include: tasks/gnome_defaults.yml
+    - import_tasks: tasks/gnome_defaults.yml
       when: ansible_os_family == "Debian"
       tags:
         - gnome_defaults
