@@ -120,7 +120,6 @@ for app in "Activity Monitor" \
 	"SizeUp" \
 	"Spectacle" \
 	"SystemUIServer" \
-	"Terminal" \
 	"iCal"; do
 	killall "${app}" &> /dev/null
 done
