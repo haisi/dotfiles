@@ -13,9 +13,11 @@ case "$(uname -s)" in
         fi
 
         # install homebrew
-        if [[ ! -x /usr/local/bin/brew ]]; then
+        if [[ ! -x /opt/homebrew/bin/brew ]]; then
           echo "[i] Install Homebrew"
           /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+          (echo; echo 'eval "$(/opt/homebrew/bin/brew shellenv)"') >> /Users/hak/.bash_profile
+          eval "$(/opt/homebrew/bin/brew shellenv)"
         fi
 
         # install ansible
@@ -76,3 +78,6 @@ ansible-galaxy install -r requirements.yml
 # Run main playbook
 echo "[i] Run Playbook"
 ansible-playbook main.yml --ask-become-pass
+
+# For account to use zsh
+chsh -s /bin/zsh
