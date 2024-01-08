@@ -15,6 +15,12 @@
     - { src: "~/my-mac/dotfiles/.gitconfig", dest: "~/.gitconfig"}
     - { src: "~/my-mac/dotfiles/.gitignore_global", dest: "~/.gitignore_global"}
 
+- name: Create a directory if it does not exist
+  ansible.builtin.file:
+    path: "~/Library/Application\ Support/Spectacle"
+    state: directory
+    mode: '0755'
+
 - name: copy files
   copy:
     src: "{{ item.src }}"
