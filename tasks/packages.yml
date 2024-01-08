@@ -29,6 +29,11 @@
   tags:
     - pip
 
+- name: Include chrome plugins list
+  include_vars: vars/chrome-plugins.yml
+  tags:
+    - chrome
+
 - block:
     - name: Update/Upgrade Homebrew
       homebrew:
@@ -100,3 +105,9 @@
   with_dict: "{{npm}}"
   tags:
     - npm
+
+- name: Install Chrome Plugins
+  shell: open -a "Google Chrome" '{{item.key}}'
+  with_dict: "{{chromeplugin}}"
+  tags:
+    - chrome
