@@ -55,7 +55,9 @@ ansible-playbook main.yml --tags "brew_formula,brew_cask"
 ** apt
 ** pip
 ** npm
+** chrome
 * shells
+* dock
 
 == Structure
 

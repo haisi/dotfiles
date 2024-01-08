@@ -4,6 +4,7 @@ dock_icon_size: 40
 #https://github.com/geerlingguy/ansible-collection-mac/blob/master/roles/dock/README.md
 dockutil_homebrew_cask: hpedrorodrigues/tools/dockutil
 dockutil_install: true
+# Note: based on system language you have to change for example "Music" to "Musik" for German
 dockitems_remove:
   - Launchpad
   - TV
@@ -23,6 +24,8 @@ dockitems_persist:
     path: "/Applications/Visual Studio Code.app/"
   - name: IntelliJ IDEA CE
     path: "/Applications/IntelliJ IDEA CE.app/"
+  - name: iTerm
+    path: "/Applications/iTerm.app/"
   - name: Google Chrome
     path: "/Applications/Google Chrome.app/"
 #---
