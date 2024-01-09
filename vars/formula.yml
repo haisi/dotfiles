@@ -1,6 +1,7 @@
 ---
 formula:
   ack:
+  awscli:
   cloc: # Terminal: lines of code counter
   git:
   gnu-sed:
