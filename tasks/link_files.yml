@@ -12,6 +12,7 @@
     - { src: "~/my-mac/dotfiles/.functions", dest: "~/.functions"}
     - { src: "~/my-mac/dotfiles/.path", dest: "~/.path"}
     - { src: "~/my-mac/dotfiles/.zshrc", dest: "~/.zshrc"}
+    - { src: "~/my-mac/dotfiles/.p10k.zsh", dest: "~/.p10k.zsh"}
     - { src: "~/my-mac/dotfiles/.gitconfig", dest: "~/.gitconfig"}
     - { src: "~/my-mac/dotfiles/.gitignore_global", dest: "~/.gitignore_global"}
 
