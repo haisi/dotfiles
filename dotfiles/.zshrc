@@ -1,5 +1,5 @@
 # If you come from bash you might have to change your $PATH.
-source ~/my-mac/powerlevel10k/powerlevel10k.zsh-theme
+source ~/my-mac/zsh-plugins/powerlevel10k/powerlevel10k.zsh-theme
 export PATH=$(brew --prefix)/opt/findutils/libexec/gnubin:$HOME/bin:/usr/local/bin:$PATH:/usr/local/bin/kubectl
 export PATH="/usr/local/anaconda3/bin:$PATH"
 
@@ -31,9 +31,9 @@ autoload -U compinit
 compinit
 
 
-source ~/my-mac/dotfiles/zsh-plugins/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
-source ~/my-mac/dotfiles/zsh-plugins/zsh-autosuggestions/zsh-autosuggestions.zsh
-source ~/my-mac/dotfiles/zsh-plugins/zsh-history-substring-search/zsh-history-substring-search.zsh
+source ~/my-mac/zsh-plugins/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
+source ~/my-mac/zsh-plugins/zsh-autosuggestions/zsh-autosuggestions.zsh
+source ~/my-mac/zsh-plugins/zsh-history-substring-search/zsh-history-substring-search.zsh
 
 # Uncomment the following line to display red dots whilst waiting for completion.
 # Caution: this setting can cause issues with multiline prompts (zsh 5.7.1 and newer seem to work)
