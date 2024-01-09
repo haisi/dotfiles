@@ -17,6 +17,7 @@ case "$(uname -s)" in
           echo "[i] Install Homebrew"
           /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
           (echo; echo 'eval "$(/opt/homebrew/bin/brew shellenv)"') >> /Users/hak/.bash_profile
+          (echo; echo 'eval "$(/opt/homebrew/bin/brew shellenv)"') >> /Users/hak/.zprofile
           eval "$(/opt/homebrew/bin/brew shellenv)"
         fi
 
