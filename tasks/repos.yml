@@ -1,0 +1,14 @@
+---
+- name: Create a directory if it does not exist
+  ansible.builtin.file:
+    path: "~/my-learnings"
+    state: directory
+
+- name: pull repos for learnings, templates etc.
+  git:
+    repo: "{{ item.repo }}"
+    dest: "{{ item.dest }}"
+  loop:
+    - { repo: "git@github.com:haisi/learning-ansible.git", dest: "~/my-learnings/learning-ansible"}
+    - { repo: "git@github.com:haisi/learning-aws.git", dest: "~/my-learnings/learning-aws"}
+    - { repo: "git@github.com:haisi/learning-misc.git", dest: "~/my-learnings/learning-misc"}

@@ -24,6 +24,10 @@
       tags:
         - shells
 
+    - import_tasks: tasks/repos.yml
+      tags:
+        - repos
+
     - import_tasks: tasks/macos_defaults.yml
       when: ansible_os_family == "Darwin"
       tags:

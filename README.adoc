@@ -49,6 +49,7 @@ ansible-playbook main.yml --tags "brew_formula,brew_cask"
 * macos_defaults
 * links
 * packages (runs all package installs)
+* repos
 ** brew_taps
 ** brew_formula
 ** brew_cask
