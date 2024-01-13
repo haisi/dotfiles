@@ -11,6 +11,7 @@
     - { src: "~/my-mac/dotfiles/.exports", dest: "~/.exports"}
     - { src: "~/my-mac/dotfiles/.functions", dest: "~/.functions"}
     - { src: "~/my-mac/dotfiles/.path", dest: "~/.path"}
+    - { src: "~/my-mac/dotfiles/.zprofile", dest: "~/.zprofile"}
     - { src: "~/my-mac/dotfiles/.zshrc", dest: "~/.zshrc"}
     - { src: "~/my-mac/dotfiles/.p10k.zsh", dest: "~/.p10k.zsh"}
     - { src: "~/my-mac/dotfiles/.gitconfig", dest: "~/.gitconfig"}
