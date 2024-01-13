@@ -1,8 +1,11 @@
 ---
 - name: Create a directory if it does not exist
-  ansible.builtin.file:
-    path: "~/my-learnings"
+  file:
+    path: "{{ item.dir }}"
     state: directory
+  loop:
+    - { dir: "~/my-learnings"}
+    - { dir: "~/my-projects"}
 
 - name: pull repos for learnings, templates etc.
   git:
@@ -11,4 +14,7 @@
   loop:
     - { repo: "git@github.com:haisi/learning-ansible.git", dest: "~/my-learnings/learning-ansible"}
     - { repo: "git@github.com:haisi/learning-aws.git", dest: "~/my-learnings/learning-aws"}
+    - { repo: "git@github.com:haisi/learning-docker.git", dest: "~/my-learnings/learning-docker"}
+    - { repo: "git@github.com:haisi/learning-k8s.git", dest: "~/my-learnings/learning-k8s"}
     - { repo: "git@github.com:haisi/learning-misc.git", dest: "~/my-learnings/learning-misc"}
+    - { repo: "git@github.com:haisi/learning-sql.git", dest: "~/my-learnings/learning-sql"}
