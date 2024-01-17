@@ -7,6 +7,7 @@ fi
 
 # If you come from bash you might have to change your $PATH.
 source ~/my-mac/zsh-plugins/powerlevel10k/powerlevel10k.zsh-theme
+
 export PATH=$(brew --prefix)/opt/findutils/libexec/gnubin:$HOME/bin:/usr/local/bin:$PATH:/usr/local/bin/kubectl
 export PATH="/usr/local/anaconda3/bin:$PATH"
 export PATH="/usr/local/opt/openjdk/bin:$PATH"
@@ -38,7 +39,6 @@ setopt HIST_REDUCE_BLANKS
 autoload -U compinit
 compinit
 
-
 source ~/my-mac/zsh-plugins/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
 source ~/my-mac/zsh-plugins/zsh-autosuggestions/zsh-autosuggestions.zsh
 source ~/my-mac/zsh-plugins/zsh-history-substring-search/zsh-history-substring-search.zsh
@@ -61,34 +61,7 @@ COMPLETION_WAITING_DOTS="true"
 # see 'man strftime' for details.
 HIST_STAMPS="yyyy-mm-dd"
 
-# https://github.com/zsh-users/zsh-autosuggestions/blob/master/INSTALL.md
-#antigen bundle zsh-users/zsh-autosuggestions
-
-# Would you like to use another custom folder than $ZSH/custom?
-# ZSH_CUSTOM=/path/to/new-custom-folder
-
-# Which plugins would you like to load?
-# Standard plugins can be found in $ZSH/plugins/
-# Custom plugins may be added to $ZSH_CUSTOM/plugins/
-# Example format: plugins=(rails git textmate ruby lighthouse)
-# Add wisely, as too many plugins slow down shell startup.
-plugins=(git git-extra
-    colored-man
-    kubectl kubectx
-    sudo # when you try a command which requires sudo (fails), when you arrow back, it adds sudo (or hit escape key twice)
-    # https://github.com/ohmyzsh/ohmyzsh/tree/master/plugins/web-search
-    web-search
-    dirhistory
-    # acs: show all aliases by group
-    # acs -h/--help: print help mesage
-    # acs <keyword>: filter aliases by <keyword> and highlight
-    # acs -g <group>/--group <group>: show only aliases for group <group>. Multiple uses of the flag show all groups
-    # acs --groups: show only group names
-    aliases
-    )
-
-# You may need to manually set your language environment
-# export LANG=en_US.UTF-8
+export LANG=en_US.UTF-8
 
 # Preferred editor for local and remote sessions
 # if [[ -n $SSH_CONNECTION ]]; then
@@ -109,7 +82,6 @@ source ~/.exports
 source ~/.aliases
 source ~/.functions
 source ~/.path
-# alias ohmyzsh="mate ~/.oh-my-zsh"
 
 # To customize prompt, run `p10k configure` or edit ~/.p10k.zsh.
 [[ ! -f ~/.p10k.zsh ]] || source ~/.p10k.zsh
