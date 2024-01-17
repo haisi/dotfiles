@@ -7,10 +7,13 @@
     - { dir: "~/my-learnings"}
     - { dir: "~/my-projects"}
 
+# Add your SSH key to the keychain in case your key is protected with a passphrase
+# https://docs.github.com/en/enterprise-cloud@latest/authentication/connecting-to-github-with-ssh/generating-a-new-ssh-key-and-adding-it-to-the-ssh-agent#adding-your-ssh-key-to-the-ssh-agent
 - name: pull repos for learnings, templates etc.
   git:
     repo: "{{ item.repo }}"
     dest: "{{ item.dest }}"
+    accept_hostkey: yes
   loop:
     - { repo: "git@github.com:haisi/learning-ansible.git", dest: "~/my-learnings/learning-ansible"}
     - { repo: "git@github.com:haisi/learning-aws.git", dest: "~/my-learnings/learning-aws"}
@@ -18,3 +21,4 @@
     - { repo: "git@github.com:haisi/learning-k8s.git", dest: "~/my-learnings/learning-k8s"}
     - { repo: "git@github.com:haisi/learning-misc.git", dest: "~/my-learnings/learning-misc"}
     - { repo: "git@github.com:haisi/learning-sql.git", dest: "~/my-learnings/learning-sql"}
+    - { repo: "git@github.com:haisi/learning-terraform.git", dest: "~/my-learnings/learning-terraform"}
