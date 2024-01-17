@@ -43,6 +43,8 @@ Meaning, you can selectively choose which tasks you want to (re-)run with:
 ansible-playbook main.yml --tags "macos_defaults"
 # Multiple tags
 ansible-playbook main.yml --tags "brew_formula,brew_cask"
+# To decrypt ansible-vault encrypted files on copy automatically
+ansible-playbook main.yml --tags "aws" --ask-vault-pass
 ----
 
 .Available Ansible Tags
@@ -50,6 +52,7 @@ ansible-playbook main.yml --tags "brew_formula,brew_cask"
 * links
 * repos
 * packages (runs all package installs)
+* aws
 ** brew_taps
 ** brew_formula
 ** brew_cask
