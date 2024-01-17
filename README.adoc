@@ -51,8 +51,8 @@ ansible-playbook main.yml --tags "aws" --ask-vault-pass
 * macos_defaults
 * links
 * repos
-* packages (runs all package installs)
 * aws
+* packages (runs all package installs)
 ** brew_taps
 ** brew_formula
 ** brew_cask
