@@ -9,8 +9,8 @@ formula:
   httpie:
   jq:
   shellcheck:
-  sdkman-cli: # requires https://github.com/sdkman/homebrew-tap
   ssh-copy-id:
+  terraform:
   tree: # Terminal: Shows tree structure of directory
   watch:
   wget:
