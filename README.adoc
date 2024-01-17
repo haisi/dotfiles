@@ -7,7 +7,7 @@ As a software consultant I frequently jump between software projects of various 
 Mostly, this means I have to use the hardware and OS provided by my customer — usually an Ubuntu VM or a MacBook.
 
 In order to re-create my preferred setup as quickly and as reliably as possible,
-I documented and largely automated the setup process using https://github.com/ansible/ansible[Ansible].
+I *documented and largely automated the setup process* using https://github.com/ansible/ansible[Ansible].
 Certain steps still require manual intervention for tasks such as authentication into various services.
 I use this README to point them out.
 Furthermore, this documentation serves as an explanation why I configure my system a certain way
