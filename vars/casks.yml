@@ -1,6 +1,7 @@
 ---
 casks:
   calibre: # itunes for ebooks
+  docker:
   google-chrome:
   intellij-idea-ce:
   iterm2:
