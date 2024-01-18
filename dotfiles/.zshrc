@@ -11,6 +11,7 @@ source ~/my-mac/zsh-plugins/powerlevel10k/powerlevel10k.zsh-theme
 export PATH=$(brew --prefix)/opt/findutils/libexec/gnubin:$HOME/bin:/usr/local/bin:$PATH:/usr/local/bin/kubectl
 export PATH="/usr/local/anaconda3/bin:$PATH"
 export PATH="/usr/local/opt/openjdk/bin:$PATH"
+export PATH="/opt/homebrew/opt/openjdk/bin:$PATH"
 
 # History in cache directory:
 HISTSIZE=10000
