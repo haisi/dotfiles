@@ -1,5 +1,6 @@
 ---
 casks:
+  anki:
   calibre: # itunes for ebooks
   docker:
   google-chrome:
