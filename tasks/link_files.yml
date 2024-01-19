@@ -29,3 +29,11 @@
     dest: "{{ item.dest }}"
   loop:
     - { src: "~/my-mac/dotfiles/spectacle.json", dest: "~/Library/Application\ Support/Spectacle/Shortcuts.json"}
+
+- name: Create empty zsh history file
+  copy:
+    content: ""
+    path: "~/Library/Application\ Support/Spectacle"
+    force: false
+    state: file
+    mode: '0666'
