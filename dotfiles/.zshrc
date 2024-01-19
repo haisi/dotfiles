@@ -14,28 +14,31 @@ export PATH="/usr/local/opt/openjdk/bin:$PATH"
 export PATH="/opt/homebrew/opt/openjdk/bin:$PATH"
 
 # History in cache directory:
+HISTFILE=~/.cache/zsh/history
 HISTSIZE=10000
 SAVEHIST=10000
-HISTFILE=~/.cache/zsh/history
+HIST_STAMPS="yyyy-mm-dd"
+
+# See all options: https://zsh.sourceforge.io/Doc/Release/Options.html
+
+setopt append_history # Append history to the history file (no overwriting)
+setopt extended_history # Save each command’s beginning timestamp (in seconds since the epoch) and the duration (in seconds) to the history file
+setopt inc_append_history # Immediately append to the history file, not just when a term is killed
+setopt share_history # Share history across terminals
 
 # options
 unsetopt menu_complete
-unsetopt flowcontrol
 
-setopt prompt_subst
-setopt always_to_end
-setopt append_history
-setopt auto_menu
+setopt always_to_end # If a completion is performed with the cursor within a word, and a full completion is inserted, the cursor is moved to the end of the word.
+setopt auto_menu # Automatically use menu completion after the second consecutive request
 setopt complete_in_word
-setopt extended_history
 setopt hist_expire_dups_first
+setopt hist_ignore_all_dups  # don't record dupes in history
 setopt hist_ignore_dups
-setopt hist_ignore_space
-setopt hist_verify
-setopt inc_append_history
-setopt share_history
-setopt HIST_IGNORE_ALL_DUPS  # don't record dupes in history
-setopt HIST_REDUCE_BLANKS
+setopt hist_ignore_space # Remove command lines from the history list when the first character on the line is a space
+setopt hist_reduce_blanks # Remove superfluous blanks from each command line being added to the history list.
+setopt hist_verify # Whenever the user enters a line with history expansion, don’t execute the line directly; instead, perform history expansion and reload the line into the editing buffer.
+setopt prompt_subst
 
 autoload -U compinit
 compinit
@@ -43,24 +46,6 @@ compinit
 source ~/my-mac/zsh-plugins/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
 source ~/my-mac/zsh-plugins/zsh-autosuggestions/zsh-autosuggestions.zsh
 source ~/my-mac/zsh-plugins/zsh-history-substring-search/zsh-history-substring-search.zsh
-
-# Uncomment the following line to display red dots whilst waiting for completion.
-# Caution: this setting can cause issues with multiline prompts (zsh 5.7.1 and newer seem to work)
-# See https://github.com/ohmyzsh/ohmyzsh/issues/5765
-COMPLETION_WAITING_DOTS="true"
-
-# Uncomment the following line if you want to disable marking untracked files
-# under VCS as dirty. This makes repository status check for large repositories
-# much, much faster.
-# DISABLE_UNTRACKED_FILES_DIRTY="true"
-
-# Uncomment the following line if you want to change the command execution time
-# stamp shown in the history command output.
-# You can set one of the optional three formats:
-# "mm/dd/yyyy"|"dd.mm.yyyy"|"yyyy-mm-dd"
-# or set a custom format using the strftime function format specifications,
-# see 'man strftime' for details.
-HIST_STAMPS="yyyy-mm-dd"
 
 export LANG=en_US.UTF-8
 
