@@ -96,17 +96,15 @@ ansible-playbook main.yml --tags "aws" --ask-vault-pass
 == Manual Steps
 
 . Copy/Create SSH keys
-. Configure Spectacle
 . Configure Itsycal
 . Configure menumeters
 . Configure IntelliJ
 
-Through app store
-echo "Install the following tools manually through the app store"
-echo -e '\e]8;;https://apps.apple.com/us/app/gestimer/id990588172\aGestimer\e]8;;\a'
-echo -e '\e]8;;https://apps.apple.com/us/app/gestimer/id1355679052\aDropover\e]8;;\a' #
-
+.Settings to change for Spectacle to work
 image::docs/enable_spectacle.png[]
+
+.Disable changing keyboard input source (language) selection due to overlap with IntelliJs auto-suggestion short-cut.
+image::docs/disable_keyboard_input.png[]
 
 === End State
 
