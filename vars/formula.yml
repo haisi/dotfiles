@@ -8,6 +8,7 @@ formula:
   htop:
   httpie:
   jq:
+  neovim:
   openjdk:
   shellcheck:
   ssh-copy-id:
