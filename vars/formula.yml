@@ -3,6 +3,7 @@ formula:
   ack:
   awscli:
   cloc: # Terminal: lines of code counter
+  fd: # Better alternative to "find" command
   git:
   gnu-sed:
   htop:
@@ -10,6 +11,7 @@ formula:
   jq:
   neovim:
   openjdk:
+  ripgrep:
   shellcheck:
   ssh-copy-id:
   terraform:
