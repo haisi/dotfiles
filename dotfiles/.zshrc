@@ -12,6 +12,7 @@ export PATH=$(brew --prefix)/opt/findutils/libexec/gnubin:$HOME/bin:/usr/local/b
 export PATH="/usr/local/anaconda3/bin:$PATH"
 export PATH="/usr/local/opt/openjdk/bin:$PATH"
 export PATH="/opt/homebrew/opt/openjdk/bin:$PATH"
+export PATH="/Applications/IntelliJ IDEA CE.app/Contents/MacOS:$PATH"
 
 # History in cache directory:
 HISTFILE=~/.cache/zsh/history
