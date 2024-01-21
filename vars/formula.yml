@@ -10,6 +10,7 @@ formula:
   httpie:
   jq:
   neovim:
+  nvm:
   openjdk:
   ripgrep:
   shellcheck:
