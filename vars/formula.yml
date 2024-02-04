@@ -6,6 +6,7 @@ formula:
   fd: # Better alternative to "find" command
   git:
   gnu-sed:
+  graphviz:
   htop:
   httpie:
   jq:
