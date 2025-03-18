@@ -36,4 +36,4 @@ export LESS_TERMCAP_md="${yellow}";
 export MANPAGER='less -X';
 
 # Tell grep to highlight matches
-export GREP_OPTIONS='—color=auto'
+export GREP_OPTIONS="--color=auto"
