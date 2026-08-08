@@ -28,7 +28,22 @@ elif command -v batcat >/dev/null 2>&1; then
 else
   _fzf_bat_cmd='cat'
 fi
-export _FZF_PREVIEW_CMD="$_fzf_bat_cmd --color=always --style=plain,numbers --line-range=:500 {}"
+
+# Render images inline (Kitty/iTerm/sixel graphics protocol) when chafa is
+# available; ghostty and most modern terminals support this. Falls back to
+# bat/cat for everything else.
+if command -v chafa >/dev/null 2>&1; then
+  _fzf_image_case="*.png|*.jpg|*.jpeg|*.gif|*.bmp|*.webp|*.tiff|*.tif|*.ico|*.avif|*.qoi|*.svg)
+    chafa --animate=off --size=\"\${FZF_PREVIEW_COLUMNS}x\${FZF_PREVIEW_LINES}\" {} ;;
+  "
+else
+  _fzf_image_case=""
+fi
+
+export _FZF_PREVIEW_CMD="case {} in
+  ${_fzf_image_case}*)
+    $_fzf_bat_cmd --color=always --style=plain,numbers --line-range=:500 {} ;;
+esac"
 export FZF_CTRL_T_OPTS="--preview '$_FZF_PREVIEW_CMD'"
 
 # Ctrl+F: file picker excluding hidden files
