@@ -34,7 +34,7 @@ fi
 # bat/cat for everything else.
 if command -v chafa >/dev/null 2>&1; then
   _fzf_image_case="*.png|*.jpg|*.jpeg|*.gif|*.bmp|*.webp|*.tiff|*.tif|*.ico|*.avif|*.qoi|*.svg)
-    chafa --animate=off --size=\"\${FZF_PREVIEW_COLUMNS}x\${FZF_PREVIEW_LINES}\" {} ;;
+    chafa --clear --animate=off --size=\"\${FZF_PREVIEW_COLUMNS}x\${FZF_PREVIEW_LINES}\" {} ;;
   "
 else
   _fzf_image_case=""
