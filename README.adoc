@@ -1,3 +1,5 @@
+Pre chezmoi
+
 = Haisi's automated dev setup
 
 I configure my development machine in a particular way, which suits my workflows and preferences.
