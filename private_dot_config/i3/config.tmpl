@@ -134,6 +134,25 @@ bindsym $mod+Shift+c reload
 bindsym $mod+Shift+r restart
 bindsym $mod+Shift+e exec i3-nagbar -t warning -m 'Exit i3?' -B 'Yes' 'i3-msg exit'
 
+{{ if eq (output "hostnamectl" "chassis" | trim) "laptop" -}}
+# =========================================================
+# Media keys (laptop function keys only)
+# =========================================================
+
+# Volume — wpctl ships with wireplumber, installed via setup.yml on laptops
+bindsym XF86AudioRaiseVolume exec --no-startup-id wpctl set-volume -l 1.0 @DEFAULT_AUDIO_SINK@ 5%+
+bindsym XF86AudioLowerVolume exec --no-startup-id wpctl set-volume @DEFAULT_AUDIO_SINK@ 5%-
+bindsym XF86AudioMute exec --no-startup-id wpctl set-mute @DEFAULT_AUDIO_SINK@ toggle
+
+# Display brightness
+bindsym XF86MonBrightnessUp exec --no-startup-id brightnessctl set 5%+
+bindsym XF86MonBrightnessDown exec --no-startup-id brightnessctl set 5%-
+
+# Keyboard backlight (ThinkPad tpacpi device only has 3 levels: 0-2)
+bindsym XF86KbdBrightnessUp exec --no-startup-id brightnessctl --device='tpacpi::kbd_backlight' set 1+
+bindsym XF86KbdBrightnessDown exec --no-startup-id brightnessctl --device='tpacpi::kbd_backlight' set 1-
+
+{{ end -}}
 # =========================================================
 # Bar
 # =========================================================

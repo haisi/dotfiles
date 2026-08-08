@@ -7,6 +7,14 @@
 
   vars:
     regular_user: "{{ ansible_env.SUDO_USER | default(ansible_user_id) }}"
+    # DMI chassis types that ansible's hardware facts report as laptop-ish;
+    # gates everything laptop-only below so this same playbook stays a no-op
+    # on a desktop machine.
+    laptop_form_factors:
+      - Laptop
+      - Notebook
+      - Portable
+      - Sub Notebook
 
   tasks:
     - name: Install apt packages
@@ -260,3 +268,40 @@
         DBUS_SESSION_BUS_ADDRESS: "unix:path=/run/user/{{ regular_user_uid.stdout }}/bus"
       ansible.builtin.command: gsettings set org.freedesktop.ibus.general preload-engines "['xkb:ch:de_nodeadkeys:deu']"
       when: ibus_preload_engines.stdout != "['xkb:ch:de_nodeadkeys:deu']"
+
+    # --- Laptop-only: function key support (volume, display/keyboard
+    # backlight). The matching i3 bindsyms in config.tmpl are themselves
+    # gated on `hostnamectl chassis == laptop`, so this whole block and
+    # those keybindings only ever land together on laptop hardware.
+    - name: Install laptop function key tools
+      ansible.builtin.apt:
+        name:
+          - brightnessctl
+          - pipewire-audio
+        state: present
+        update_cache: true
+      when: ansible_form_factor in laptop_form_factors
+
+    - name: Add regular user to video group for unprivileged backlight control
+      ansible.builtin.user:
+        name: "{{ regular_user }}"
+        groups: video
+        append: true
+      when: ansible_form_factor in laptop_form_factors
+
+    # Debian/Ubuntu's brightnessctl package ships no udev rule, so
+    # /sys/class/backlight/*/brightness and /sys/class/leds/*kbd_backlight/
+    # brightness stay root:root 0644 — hand them to the video group instead.
+    - name: Install udev rule for unprivileged backlight control
+      ansible.builtin.copy:
+        dest: /etc/udev/rules.d/90-backlight.rules
+        mode: "0644"
+        content: |
+          SUBSYSTEM=="backlight", ACTION=="add", RUN+="/bin/chgrp video $sys$devpath/brightness", RUN+="/bin/chmod g+w $sys$devpath/brightness"
+          SUBSYSTEM=="leds", KERNEL=="*kbd_backlight", ACTION=="add", RUN+="/bin/chgrp video $sys$devpath/brightness", RUN+="/bin/chmod g+w $sys$devpath/brightness"
+      register: backlight_udev_rule
+      when: ansible_form_factor in laptop_form_factors
+
+    - name: Reload udev rules and re-apply them to existing backlight/leds devices
+      ansible.builtin.shell: udevadm control --reload-rules && udevadm trigger --subsystem-match=backlight --subsystem-match=leds
+      when: backlight_udev_rule is changed
