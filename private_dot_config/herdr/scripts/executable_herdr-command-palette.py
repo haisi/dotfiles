@@ -4,14 +4,29 @@
 Resolves the effective [keys.*] binding set (herdr's built-in defaults,
 overlaid with the user's ~/.config/herdr/config.toml overrides and
 [[keys.command]] entries), offers it to fzf, and executes the selection
-either via a direct `herdr` CLI call, a `prefix+key` send-keys simulation,
-or (for [[keys.command]] entries) by re-running the entry's own command.
+either via a direct `herdr` CLI call, a small positional lookup (for
+next/previous/switch tab or workspace), or (for [[keys.command]] entries)
+by re-running the entry's own command.
+
+`herdr pane send-keys` is deliberately NOT used to simulate built-in
+actions: it writes literal bytes into a specific pane's PTY (input for
+whatever program is running there), not herdr's own global keybinding
+dispatch. Prefix-mode/global actions (help, settings, sidebar, copy mode,
+detach, goto, ...) are handled entirely client-side, before any bytes
+reach a pane, so there is no socket-API path to trigger them from
+outside. Verified empirically: sending "ctrl+b b" to a pane running `cat`
+just echoed "^Bb" back, it never toggled the sidebar. Actions with no
+real server-side equivalent (REFERENCE_ONLY_ACTIONS) stay in the palette
+as a searchable keybinding reference — dimmed, and selecting one just
+prints the key to press yourself — rather than pretending to invoke them
+(or worse, silently typing into whatever pane happens to be focused).
 
 Supports the same "# @label: ..." / "# @keywords: ..." annotation comments
 (placed directly above a [keys] line or a [[keys.command]] block) as the
 i3 command palette.
 """
 
+import json
 import os
 import re
 import shutil
@@ -32,8 +47,12 @@ COMMENTED_SECTION_RE = re.compile(r"^#\s*\[\[?([\w.]+)\]?\]$")
 SCALAR_ASSIGN_RE = re.compile(r"^([a-z_]+)\s*=")
 RANGE_RE = re.compile(r"^(.*?)(\d+)\.\.(\d+)$")
 
-# Actions that only make sense while a UI mode is already active, or that
-# aren't invokable "actions" at all. Excluded from the palette entirely.
+# Actions that aren't invokable "actions" at all (prefix itself), or whose
+# binding only means something while a *different* input mode already has
+# focus (navigate-mode's plain h/j/k/l, the --remote-only paste key). These
+# aren't real standalone keybindings, so listing them (with a binding that
+# only works in the wrong context) would be actively misleading. True
+# palette exclusions, not just "can't invoke".
 EXCLUDED_ACTIONS = {
     "prefix",
     "navigate_workspace_up",
@@ -43,6 +62,37 @@ EXCLUDED_ACTIONS = {
     "navigate_pane_up",
     "navigate_pane_right",
     "remote_image_paste",
+}
+
+# Actions that ARE real, globally-triggerable keybindings, but are pure
+# client-side UI state (popups, input modes, sidebar, client<->server
+# connection) with no server-side representation reachable from outside
+# the herdr client. Confirmed via a live test: sending "ctrl+b b" (the
+# toggle_sidebar sequence) to a pane running `cat` just echoed "^Bb" back
+# into that pane — it never reached herdr's own keybinding dispatch, which
+# lives entirely client-side. These stay IN the palette (so it still works
+# as a searchable keybinding reference, same as before the send-keys
+# fallback existed) but selecting one just reports the key to press
+# yourself, instead of pretending to run it.
+REFERENCE_ONLY_ACTIONS = {
+    "help",
+    "settings",
+    "detach",
+    "goto",
+    "workspace_picker",
+    "edit_scrollback",
+    "toggle_sidebar",
+    "copy_mode",
+    "resize_mode",
+    "cycle_pane_next",
+    "cycle_pane_previous",
+    "last_pane",
+    "open_notification_target",
+    "open_worktree",
+    "remove_worktree",
+    "focus_agent",
+    "previous_agent",
+    "next_agent",
 }
 
 RENAME_ACTIONS = {
@@ -177,10 +227,7 @@ def build_entries():
         die(f"could not run `{HERDR_BIN} --default-config`: {e}")
 
     default_bindings = parse_default_bindings(default_text)
-    prefix_key = default_bindings.pop("prefix", "ctrl+b")
-
     scalar_overrides, key_annotations, custom_commands, command_annotations = load_user_config()
-    prefix_key = scalar_overrides.pop("prefix", prefix_key)
 
     effective = dict(default_bindings)
     effective.update(scalar_overrides)
@@ -197,14 +244,21 @@ def build_entries():
             kw = [name, binding]
             if ann.get("keywords"):
                 kw.append(ann["keywords"])
+            if name in RENAME_ACTIONS and suffix is None:
+                kind = "rename"
+            elif name in REFERENCE_ONLY_ACTIONS:
+                kind = "reference"
+            else:
+                kind = "builtin"
             entries.append(
                 {
                     "label": label,
                     "key_display": binding,
                     "keywords": " ".join(kw),
-                    "kind": "rename" if name in RENAME_ACTIONS and suffix is None else "builtin",
+                    "kind": kind,
                     "action": name,
                     "binding": binding,
+                    "index": suffix,
                 }
             )
 
@@ -225,7 +279,7 @@ def build_entries():
         )
 
     entries.sort(key=lambda e: e["label"].lower())
-    return entries, prefix_key
+    return entries
 
 
 def build_fzf_input(entries):
@@ -233,7 +287,13 @@ def build_fzf_input(entries):
     key_width = max((len(e["key_display"]) for e in entries), default=0)
     lines = []
     for i, e in enumerate(entries):
-        display = f"{e['label']:<{label_width}}  {e['key_display']:>{key_width}}"
+        row = f"{e['label']:<{label_width}}  {e['key_display']:>{key_width}}"
+        if e["kind"] == "reference":
+            # Can't be invoked from outside the client (see
+            # REFERENCE_ONLY_ACTIONS) — dim the whole row so it visually
+            # reads as "reference, not runnable", not just another action.
+            row = f"\x1b[2m{row}  (view only)\x1b[0m"
+        display = row
         if e["keywords"]:
             # fzf has no native "hidden but searchable" field (--with-nth
             # restricts matching to exactly what it displays, per `man
@@ -288,10 +348,53 @@ CLI_MAPPING = {
     "new_tab": lambda p, t, w: [HERDR_BIN, "tab", "create", "--workspace", w, "--focus"],
     "new_workspace": lambda p, t, w: [HERDR_BIN, "workspace", "create", "--focus"],
     "reload_config": lambda p, t, w: [HERDR_BIN, "server", "reload-config"],
-    # close_workspace is deliberately NOT mapped here: the UI's
-    # confirm_close prompt has no CLI equivalent, so it falls through to
-    # send-keys to preserve the confirmation dialog.
+    # NOTE: the UI's confirm_close prompt for close_workspace has no CLI
+    # equivalent (it's client-side), so this skips that confirmation.
+    # There's no other way to invoke it from outside the client.
+    "close_workspace": lambda p, t, w: [HERDR_BIN, "workspace", "close", w],
 }
+
+
+def _api_get(argv):
+    result = subprocess.run(argv, capture_output=True, text=True, check=False)
+    try:
+        return json.loads(result.stdout).get("result", {})
+    except (json.JSONDecodeError, AttributeError):
+        return {}
+
+
+def handle_tab_step(direction, env):
+    ws = env.get("HERDR_ACTIVE_WORKSPACE_ID", "")
+    tabs = _api_get([HERDR_BIN, "tab", "list", "--workspace", ws]).get("tabs", [])
+    if not tabs:
+        return
+    idx = next((i for i, t in enumerate(tabs) if t.get("focused")), 0)
+    new_idx = (idx + (1 if direction == "next" else -1)) % len(tabs)
+    subprocess.run([HERDR_BIN, "tab", "focus", tabs[new_idx]["tab_id"]], check=False)
+
+
+def handle_switch_tab(n, env):
+    ws = env.get("HERDR_ACTIVE_WORKSPACE_ID", "")
+    tabs = _api_get([HERDR_BIN, "tab", "list", "--workspace", ws]).get("tabs", [])
+    if 1 <= n <= len(tabs):
+        subprocess.run([HERDR_BIN, "tab", "focus", tabs[n - 1]["tab_id"]], check=False)
+
+
+def handle_switch_workspace(n, env):
+    workspaces = _api_get([HERDR_BIN, "workspace", "list"]).get("workspaces", [])
+    if 1 <= n <= len(workspaces):
+        subprocess.run([HERDR_BIN, "workspace", "focus", workspaces[n - 1]["workspace_id"]], check=False)
+
+
+def handle_new_worktree(env):
+    try:
+        branch = input("New worktree branch (blank = default): ").strip()
+    except EOFError:
+        return
+    argv = [HERDR_BIN, "worktree", "create", "--workspace", env.get("HERDR_ACTIVE_WORKSPACE_ID", "")]
+    if branch:
+        argv += ["--branch", branch]
+    subprocess.run(argv, check=False)
 
 
 def handle_rename(action, env):
@@ -322,22 +425,40 @@ def run_custom(cmd, env):
     subprocess.Popen(["sh", "-c", command_str], start_new_session=True, env=env)
 
 
-def send_keys(binding, prefix_key, env):
-    pane = env["HERDR_ACTIVE_PANE_ID"]
-    if binding.startswith("prefix+"):
-        args = [prefix_key, binding[len("prefix+") :]]
-    else:
-        args = [binding]
-    subprocess.run([HERDR_BIN, "pane", "send-keys", pane, *args], check=False)
+def show_reference(entry):
+    print(f"'{entry['label']}' can't be triggered from outside herdr (client-side only UI).")
+    print(f"Press it yourself: {entry['binding']}")
+    try:
+        input("Press Enter to close...")
+    except EOFError:
+        pass
 
 
-def dispatch(entry, prefix_key, env):
+def dispatch(entry, env):
     if entry["kind"] == "custom":
         run_custom(entry["cmd"], env)
+        return
+    if entry["kind"] == "reference":
+        show_reference(entry)
         return
     action = entry["action"]
     if entry["kind"] == "rename":
         handle_rename(action, env)
+        return
+    if action == "previous_tab":
+        handle_tab_step("previous", env)
+        return
+    if action == "next_tab":
+        handle_tab_step("next", env)
+        return
+    if action == "switch_tab":
+        handle_switch_tab(entry["index"], env)
+        return
+    if action == "switch_workspace":
+        handle_switch_workspace(entry["index"], env)
+        return
+    if action == "new_worktree":
+        handle_new_worktree(env)
         return
     argv_fn = CLI_MAPPING.get(action)
     if argv_fn:
@@ -346,12 +467,12 @@ def dispatch(entry, prefix_key, env):
         ws = env.get("HERDR_ACTIVE_WORKSPACE_ID", "")
         subprocess.run(argv_fn(pane, tab, ws), check=False)
     else:
-        send_keys(entry["binding"], prefix_key, env)
+        sys.stderr.write(f"herdr-command-palette: no way to trigger '{action}' from outside herdr.\n")
 
 
 def main():
     if "--list" in sys.argv:
-        entries, _ = build_entries()
+        entries = build_entries()
         for e in entries:
             print(f"{e['label']:<32} {e['key_display']:<20} {e['keywords']}")
         return
@@ -363,7 +484,7 @@ def main():
     if shutil.which(HERDR_BIN) is None:
         die(f"`{HERDR_BIN}` is not on PATH.")
 
-    entries, prefix_key = build_entries()
+    entries = build_entries()
     if not entries:
         die("no keybinding entries found.")
 
@@ -376,7 +497,7 @@ def main():
     except (ValueError, IndexError):
         sys.exit(0)
 
-    dispatch(entry, prefix_key, env)
+    dispatch(entry, env)
 
 
 if __name__ == "__main__":
