@@ -2,7 +2,11 @@
 # fzf
 # =========================================================
 
-export FZF_DEFAULT_COMMAND='fd --type f --hidden --strip-cwd-prefix'  # strip-cwd-prefix removes the leading ./ from results
+if command -v fd >/dev/null 2>&1; then
+  export FZF_DEFAULT_COMMAND='fd --type f --hidden --strip-cwd-prefix'  # strip-cwd-prefix removes the leading ./ from result9;6u
+elif command -v fdfind >/dev/null 2>&1; then
+  export FZF_DEFAULT_COMMAND='fdfind --type f --hidden --strip-cwd-prefix'
+fi
 
 # Ctrl-T uses fd
 export FZF_CTRL_T_COMMAND="$FZF_DEFAULT_COMMAND"
