@@ -30,6 +30,11 @@
           - tree
           - neovim
           - lazygit
+          - xserver-xorg
+          - i3-wm
+          - i3status
+          - i3lock
+          - rofi
         state: present
         update_cache: true
 
