@@ -5,3 +5,12 @@ onboarding = false
 [terminal]
 # Executable used for new interactive panes.
 default_shell = "/usr/bin/zsh"
+
+# @keywords: actions search intellij vscode ctrl+shift+a
+[[keys.command]]
+key = "prefix+shift+a"
+type = "popup"
+command = "python3 /home/dev/.config/herdr/scripts/herdr-command-palette.py"
+description = "Command palette"
+width = "80%"
+height = "80%"
