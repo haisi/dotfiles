@@ -14,6 +14,14 @@ set $launcher rofi -show drun
 set $lock i3lock -c 1e1e2e
 
 # =========================================================
+# Startup
+# =========================================================
+
+# GDM's per-session layout handling doesn't carry over to an i3 X11
+# session, so it starts as "us" even though /etc/default/keyboard is ch.
+exec --no-startup-id setxkbmap ch de_nodeadkeys
+
+# =========================================================
 # Programs
 # =========================================================
 
