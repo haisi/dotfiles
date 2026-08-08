@@ -30,6 +30,7 @@
           - tree
           - neovim
           - lazygit
+          - build-essential
           - xserver-xorg
           - i3-wm
           - i3status
@@ -126,6 +127,20 @@
       become_user: "{{ regular_user }}"
       ansible.builtin.command: mise use --global java@25
       when: mise_java_versions is failed or '25' not in mise_java_versions.stdout
+
+    - name: Check installed mise Node versions
+      become: true
+      become_user: "{{ regular_user }}"
+      ansible.builtin.command: mise ls node
+      register: mise_node_versions
+      ignore_errors: true
+      changed_when: false
+
+    - name: Install Node LTS and set as the global default via mise
+      become: true
+      become_user: "{{ regular_user }}"
+      ansible.builtin.command: mise use --global node@lts
+      when: mise_node_versions is failed or mise_node_versions.stdout == ""
 
     # --- zoxide (installs to ~/.local/bin, has no apt package) ---
     - name: Check if zoxide is installed
