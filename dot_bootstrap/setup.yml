@@ -108,14 +108,16 @@
         update_cache: true
 
     - name: Check installed mise Java versions
-      become: false
+      become: true
+      become_user: "{{ regular_user }}"
       ansible.builtin.command: mise ls java
       register: mise_java_versions
       ignore_errors: true
       changed_when: false
 
     - name: Install JDK 25 and set as the global default via mise
-      become: false
+      become: true
+      become_user: "{{ regular_user }}"
       ansible.builtin.command: mise use --global java@25
       when: mise_java_versions is failed or '25' not in mise_java_versions.stdout
 
@@ -126,7 +128,8 @@
       register: zoxide_bin
 
     - name: Install zoxide
-      become: false
+      become: true
+      become_user: "{{ regular_user }}"
       ansible.builtin.shell: curl -sSfL https://raw.githubusercontent.com/ajeetdsouza/zoxide/main/install.sh | sh
       when: not zoxide_bin.stat.exists
 
@@ -151,7 +154,13 @@
         owner: "{{ regular_user }}"
       when: not jbmono_font.stat.exists
 
+    - name: Remove leftover downloaded font archive
+      ansible.builtin.file:
+        path: "~{{ regular_user }}/.local/share/fonts/JetBrainsMono.zip"
+        state: absent
+
     - name: Refresh font cache
-      become: false
+      become: true
+      become_user: "{{ regular_user }}"
       ansible.builtin.command: fc-cache -f
       when: not jbmono_font.stat.exists
