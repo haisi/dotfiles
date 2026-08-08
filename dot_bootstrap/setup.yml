@@ -232,3 +232,31 @@
       become_user: "{{ regular_user }}"
       ansible.builtin.command: fc-cache -f
       when: not jbmono_font.stat.exists
+
+    # --- ibus keyboard layout ---
+    # ibus-daemon starts a second or so after i3 on every login and applies
+    # its own preload-engines' XKB layout when its first engine activates,
+    # which races and overrides i3 config's `setxkbmap ch de_nodeadkeys`
+    # exec line. Fix at the source instead of trying to out-race it.
+    - name: Get regular user's UID
+      ansible.builtin.command: id -u {{ regular_user }}
+      register: regular_user_uid
+      changed_when: false
+
+    - name: Check current ibus preload-engines
+      become: true
+      become_user: "{{ regular_user }}"
+      environment:
+        DBUS_SESSION_BUS_ADDRESS: "unix:path=/run/user/{{ regular_user_uid.stdout }}/bus"
+      ansible.builtin.command: gsettings get org.freedesktop.ibus.general preload-engines
+      register: ibus_preload_engines
+      changed_when: false
+      failed_when: false
+
+    - name: Set ibus preload-engines to Swiss German
+      become: true
+      become_user: "{{ regular_user }}"
+      environment:
+        DBUS_SESSION_BUS_ADDRESS: "unix:path=/run/user/{{ regular_user_uid.stdout }}/bus"
+      ansible.builtin.command: gsettings set org.freedesktop.ibus.general preload-engines "['xkb:ch:de_nodeadkeys:deu']"
+      when: ibus_preload_engines.stdout != "['xkb:ch:de_nodeadkeys:deu']"
