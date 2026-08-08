@@ -25,6 +25,7 @@
           - ghostty
           - fontconfig
           - btop
+          - htop
           - jq
           - tree
           - neovim
@@ -132,6 +133,18 @@
       become_user: "{{ regular_user }}"
       ansible.builtin.shell: curl -sSfL https://raw.githubusercontent.com/ajeetdsouza/zoxide/main/install.sh | sh
       when: not zoxide_bin.stat.exists
+
+    # --- herdr (installs to ~/.local/bin, has no apt package) ---
+    - name: Check if herdr is installed
+      ansible.builtin.stat:
+        path: "~{{ regular_user }}/.local/bin/herdr"
+      register: herdr_bin
+
+    - name: Install herdr
+      become: true
+      become_user: "{{ regular_user }}"
+      ansible.builtin.shell: curl -fsSL https://herdr.dev/install.sh | sh
+      when: not herdr_bin.stat.exists
 
     # --- JetBrainsMono Nerd Font ---
     - name: Ensure user fonts directory exists

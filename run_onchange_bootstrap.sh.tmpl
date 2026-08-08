@@ -2,7 +2,21 @@
 set -eu
 
 # dot_bootstrap/setup.yml hash: {{ include "dot_bootstrap/setup.yml" | sha256sum }}
+#
+# This is the only script that invokes the playbook (including installing
+# ansible itself, which apt no-ops on if already present) so that editing
+# setup.yml always triggers exactly one run.
 
-if command -v ansible-playbook >/dev/null 2>&1; then
-  ansible-playbook {{ joinPath .chezmoi.sourceDir "dot_bootstrap/setup.yml" | quote }} --ask-become-pass
+if ! command -v ansible-playbook >/dev/null 2>&1; then
+  sudo apt-get update
+  sudo apt-get install -y ansible
 fi
+
+# Run ansible-playbook itself as root (one real sudo prompt, no timeout)
+# instead of using --ask-become-pass: sudo's credential cache is normally
+# scoped to a single tty, which the playbook's "become" calls don't share,
+# and ansible's become_flags default to non-interactive (-n) whenever
+# --ask-become-pass isn't used, so it can't fall back to prompting either.
+# Running as root up front makes every become in the playbook (root->root,
+# root->regular_user) a no-op that needs no password at all.
+sudo ansible-playbook {{ joinPath .chezmoi.sourceDir "dot_bootstrap/setup.yml" | quote }}

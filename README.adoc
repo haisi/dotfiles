@@ -20,11 +20,11 @@ sh -c "$(curl -fsLS https://get.chezmoi.io)" -- init --apply haisi
 ----
 
 That last command clones this repo, applies all dotfiles, and — via
-`run_once_install_ansible.sh` — installs Ansible and runs
-`dot_bootstrap/setup.yml`, which handles everything else: zsh (+ setting it
-as the login shell), fzf, bat, eza, fd-find, ripgrep, starship, lf, chafa,
-ghostty, the GitHub CLI, zoxide, and the JetBrainsMono Nerd Font. It will
-prompt for your sudo password once (`--ask-become-pass`).
+`run_onchange_bootstrap.sh.tmpl` — installs Ansible (if missing) and runs
+`dot_bootstrap/setup.yml` as root, which handles everything else: zsh (+
+setting it as the login shell), fzf, bat, eza, fd-find, ripgrep, starship,
+lf, chafa, ghostty, the GitHub CLI, zoxide, herdr, htop, and the
+JetBrainsMono Nerd Font. It will prompt for your sudo password once.
 
 == Changing installed tools
 
