@@ -1,0 +1,120 @@
+---
+- name: Machine setup
+  hosts: localhost
+  become: true
+  connection: local
+  gather_facts: true
+
+  vars:
+    regular_user: "{{ ansible_env.SUDO_USER | default(ansible_user_id) }}"
+
+  tasks:
+    - name: Install apt packages
+      ansible.builtin.apt:
+        name:
+          - zsh
+          - gnupg
+          - fzf
+          - bat
+          - fd-find
+          - ripgrep
+          - starship
+          - lf
+          - unzip
+          - chafa
+          - ghostty
+          - fontconfig
+        state: present
+        update_cache: true
+
+    - name: Change shell to zsh
+      ansible.builtin.user:
+        name: "{{ regular_user }}"
+        shell: /usr/bin/zsh
+
+    - name: Ensure apt keyrings directory exists
+      ansible.builtin.file:
+        path: /etc/apt/keyrings
+        state: directory
+        mode: "0755"
+
+    - name: Determine dpkg architecture
+      ansible.builtin.command: dpkg --print-architecture
+      register: dpkg_arch
+      changed_when: false
+
+    # --- eza (not in Ubuntu's default repos) ---
+    - name: Add eza GPG key
+      ansible.builtin.shell: >
+        curl -fsSL https://raw.githubusercontent.com/eza-community/eza/main/deb.asc
+        | gpg --yes --dearmor -o /etc/apt/keyrings/gierens.gpg
+      args:
+        creates: /etc/apt/keyrings/gierens.gpg
+
+    - name: Add eza apt repository
+      ansible.builtin.apt_repository:
+        repo: "deb [signed-by=/etc/apt/keyrings/gierens.gpg] http://deb.gierens.de stable main"
+        filename: gierens
+        state: present
+
+    - name: Install eza
+      ansible.builtin.apt:
+        name: eza
+        state: present
+        update_cache: true
+
+    # --- GitHub CLI (not in Ubuntu's default repos) ---
+    - name: Add GitHub CLI GPG key
+      ansible.builtin.get_url:
+        url: https://cli.github.com/packages/githubcli-archive-keyring.gpg
+        dest: /etc/apt/keyrings/githubcli-archive-keyring.gpg
+        mode: "0644"
+
+    - name: Add GitHub CLI apt repository
+      ansible.builtin.apt_repository:
+        repo: "deb [arch={{ dpkg_arch.stdout }} signed-by=/etc/apt/keyrings/githubcli-archive-keyring.gpg] https://cli.github.com/packages stable main"
+        filename: github-cli
+        state: present
+
+    - name: Install GitHub CLI
+      ansible.builtin.apt:
+        name: gh
+        state: present
+        update_cache: true
+
+    # --- zoxide (installs to ~/.local/bin, has no apt package) ---
+    - name: Check if zoxide is installed
+      ansible.builtin.stat:
+        path: "~{{ regular_user }}/.local/bin/zoxide"
+      register: zoxide_bin
+
+    - name: Install zoxide
+      become: false
+      ansible.builtin.shell: curl -sSfL https://raw.githubusercontent.com/ajeetdsouza/zoxide/main/install.sh | sh
+      when: not zoxide_bin.stat.exists
+
+    # --- JetBrainsMono Nerd Font ---
+    - name: Ensure user fonts directory exists
+      ansible.builtin.file:
+        path: "~{{ regular_user }}/.local/share/fonts"
+        state: directory
+        mode: "0755"
+        owner: "{{ regular_user }}"
+
+    - name: Check if JetBrainsMono Nerd Font is installed
+      ansible.builtin.stat:
+        path: "~{{ regular_user }}/.local/share/fonts/JetBrainsMonoNerdFontMono-Regular.ttf"
+      register: jbmono_font
+
+    - name: Download and extract JetBrainsMono Nerd Font
+      ansible.builtin.unarchive:
+        src: https://github.com/ryanoasis/nerd-fonts/releases/latest/download/JetBrainsMono.zip
+        dest: "~{{ regular_user }}/.local/share/fonts"
+        remote_src: true
+        owner: "{{ regular_user }}"
+      when: not jbmono_font.stat.exists
+
+    - name: Refresh font cache
+      become: false
+      ansible.builtin.command: fc-cache -f
+      when: not jbmono_font.stat.exists
