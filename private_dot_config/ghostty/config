@@ -1,0 +1,4 @@
+# Force zsh explicitly: Ghostty's shell auto-detection doesn't reliably
+# pick up /etc/passwd's login shell (chsh -s zsh), it was falling back to
+# /bin/bash instead.
+command = /usr/bin/zsh
