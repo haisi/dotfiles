@@ -1,43 +1,33 @@
-. sudo apt-get update
-. sudo apt-get upgrade
-. sudo apt-get install -y curl
-. sh -c "$(curl -fsLS https://get.chezmoi.io)"
-. sudo apt install -y zsh
-. chsh -s "$(which zsh)"
-. sudo apt install -y git
+= dotfiles
 
-. mkdir -p $HOME/.config/zsh
-. mkdir -p $HOME/.local/state/zsh
-. mkdir -p $HOME/.cache/zsh
-. mkdir -p $HOME/.local/share
+Managed with https://chezmoi.io[chezmoi]. Package/tool installation is
+declarative via https://www.ansible.com[Ansible] — see `dot_bootstrap/setup.yml`
+for the full list of packages, repos, and tools. See also `CLAUDE.md` for the
+edit/apply/commit workflow.
 
-. curl -sSfL https://raw.githubusercontent.com/ajeetdsouza/zoxide/main/install.sh | sh
+Inspired by https://github.com/logandonley/dotfiles.
 
-. sudot apt-get install -y fzf bat 
+== New machine setup
 
-. sudo apt install -y gpg
-sudo mkdir -p /etc/apt/keyrings
-wget -qO- https://raw.githubusercontent.com/eza-community/eza/main/deb.asc | sudo gpg --dearmor -o /etc/apt/keyrings/gierens.gpg
-echo "deb [signed-by=/etc/apt/keyrings/gierens.gpg] http://deb.gierens.de stable main" | sudo tee /etc/apt/sources.list.d/gierens.list
-sudo chmod 644 /etc/apt/keyrings/gierens.gpg /etc/apt/sources.list.d/gierens.list
-sudo apt update
-sudo apt install -y eza
+Minimal manual prerequisites (curl/git/chezmoi don't exist yet, so they can't
+be installed declaratively):
 
-fd for finder
-sudo apt install fd-find
+[source,shell]
+----
+sudo apt-get update && sudo apt-get upgrade -y
+sudo apt-get install -y curl git
+sh -c "$(curl -fsLS https://get.chezmoi.io)" -- init --apply haisi
+----
 
-$ sudo apt-get install ripgrep
+That last command clones this repo, applies all dotfiles, and — via
+`run_once_install_ansible.sh` — installs Ansible and runs
+`dot_bootstrap/setup.yml`, which handles everything else: zsh (+ setting it
+as the login shell), fzf, bat, eza, fd-find, ripgrep, starship, lf, chafa,
+ghostty, the GitHub CLI, zoxide, and the JetBrainsMono Nerd Font. It will
+prompt for your sudo password once (`--ask-become-pass`).
 
-sudo apt install starship
-sudo apt-get install lf
+== Changing installed tools
 
-curl -o ~/.config/lf/icons https://raw.githubusercontent.com/gokcehan/lf/master/etc/icons.example
-
-mkdir -p ~/.local/share/fonts
-cd ~/.local/share/fonts
-curl -fLo "JetBrainsMono.zip" https://github.com/ryanoasis/nerd-fonts/releases/latest/download/JetBrainsMono.zip
-unzip JetBrainsMono.zip
-fc-cache -fv
-
-
-/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/mkasberg/ghostty-ubuntu/HEAD/install.sh)"
+Edit `dot_bootstrap/setup.yml` and run `chezmoi apply`. The
+`run_onchange_bootstrap.sh.tmpl` script re-runs the playbook automatically
+whenever that file's content changes.
