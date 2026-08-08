@@ -33,9 +33,16 @@ fi
 # available; ghostty and most modern terminals support this. Falls back to
 # bat/cat for everything else.
 if command -v chafa >/dev/null 2>&1; then
-  _fzf_image_case="*.png|*.jpg|*.jpeg|*.gif|*.bmp|*.webp|*.tiff|*.tif|*.ico|*.avif|*.qoi|*.svg)
-    chafa --clear --animate=off --size=\"\${FZF_PREVIEW_COLUMNS}x\${FZF_PREVIEW_LINES}\" {} ;;
-  "
+  # Kitty graphics protocol: delete all previously placed images first.
+  # Ghostty (like real kitty) treats placed images as a layer separate from
+  # the text grid, so a normal screen clear does NOT remove them -- without
+  # this, the last preview image lingers on screen after moving to the next
+  # file. chafa's own --clear only sends a plain ESC[2J, which doesn't touch
+  # that layer, hence the explicit delete-all-placements escape here.
+  export _fzf_kitty_img_clear=$'\e_Ga=d,d=A\e\\'
+  _fzf_image_case='*.png|*.jpg|*.jpeg|*.gif|*.bmp|*.webp|*.tiff|*.tif|*.ico|*.avif|*.qoi|*.svg)
+    printf "%s" "$_fzf_kitty_img_clear"; chafa --animate=off --size="${FZF_PREVIEW_COLUMNS}x${FZF_PREVIEW_LINES}" {} ;;
+  '
 else
   _fzf_image_case=""
 fi
