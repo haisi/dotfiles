@@ -28,6 +28,9 @@ zvm_after_init() {
   # zsh-vi-mode's reset, so it must be re-registered here too)
   bindkey '^R' fzf-history-widget
 
+  # Ctrl+T -> fzf file picker (fzf's own default widget, same reset issue)
+  bindkey '^T' fzf-file-widget
+
   # Ctrl+\ -> toggle autosuggestions (useful for screen recordings)
   bindkey '^\' autosuggest-toggle
 
