@@ -24,6 +24,11 @@
           - chafa
           - ghostty
           - fontconfig
+          - btop
+          - jq
+          - tree
+          - neovim
+          - lazygit
         state: present
         update_cache: true
 
@@ -81,6 +86,38 @@
         name: gh
         state: present
         update_cache: true
+
+    # --- mise (not in Ubuntu's default repos) + JDK 25 ---
+    - name: Add mise GPG key
+      ansible.builtin.shell: >
+        curl -fsSL https://mise.jdx.dev/gpg-key.pub
+        | gpg --yes --dearmor -o /etc/apt/keyrings/mise-archive-keyring.gpg
+      args:
+        creates: /etc/apt/keyrings/mise-archive-keyring.gpg
+
+    - name: Add mise apt repository
+      ansible.builtin.apt_repository:
+        repo: "deb [signed-by=/etc/apt/keyrings/mise-archive-keyring.gpg arch={{ dpkg_arch.stdout }}] https://mise.jdx.dev/deb stable main"
+        filename: mise
+        state: present
+
+    - name: Install mise
+      ansible.builtin.apt:
+        name: mise
+        state: present
+        update_cache: true
+
+    - name: Check installed mise Java versions
+      become: false
+      ansible.builtin.command: mise ls java
+      register: mise_java_versions
+      ignore_errors: true
+      changed_when: false
+
+    - name: Install JDK 25 and set as the global default via mise
+      become: false
+      ansible.builtin.command: mise use --global java@25
+      when: mise_java_versions is failed or '25' not in mise_java_versions.stdout
 
     # --- zoxide (installs to ~/.local/bin, has no apt package) ---
     - name: Check if zoxide is installed

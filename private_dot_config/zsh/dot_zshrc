@@ -42,6 +42,11 @@ export LF_ICONS
 # Initialize zoxide
 eval "$(zoxide init zsh)"
 
+# Initialize mise (JDKs and other tool versions)
+if command -v mise >/dev/null 2>&1; then
+  eval "$(mise activate zsh)"
+fi
+
 # =========================================================
 # Completion
 # =========================================================
