@@ -1,0 +1,37 @@
+---
+title: haisi/dotfiles
+description: A chezmoi + Ansible managed dotfiles setup.
+template: splash
+hero:
+  tagline: One command turns a bare Ubuntu box into this machine — i3, zsh, Neovim, and every tool, declared once and reproduced everywhere.
+  actions:
+    - text: New machine setup
+      link: /dotfiles/getting-started/
+      icon: right-arrow
+      variant: primary
+    - text: View on GitHub
+      link: https://github.com/haisi/dotfiles
+      icon: external
+      variant: minimal
+---
+
+import { Card, CardGrid } from '@astrojs/starlight/components';
+
+<CardGrid stagger>
+	<Card title="Declarative" icon="setting">
+		Every package, repo, and config file lives in one git repo. Nothing is
+		installed by hand — `chezmoi apply` and an Ansible playbook do it all.
+	</Card>
+	<Card title="Idempotent" icon="approve-check-circle">
+		Re-running setup is always safe. Tasks check before they act, so applying
+		the same state twice changes nothing the second time.
+	</Card>
+	<Card title="Hardware-aware" icon="laptop">
+		Laptop-only features, like function keys for volume and brightness,
+		detect the hardware themselves and quietly no-op on machines that don't have it.
+	</Card>
+	<Card title="One history" icon="github">
+		Every change is a commit. `git log` on the dotfiles repo doubles as a
+		changelog for how this machine got to be the way it is.
+	</Card>
+</CardGrid>

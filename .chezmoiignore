@@ -1,0 +1,5 @@
+# The Astro/Starlight docs site. It's a plain (unprefixed) directory name, so
+# without this it would otherwise be applied to ~/docs like any other chezmoi
+# source path. It's a normal repo subdirectory, built and deployed to GitHub
+# Pages by .github/workflows/deploy-docs.yml — not a dotfile.
+docs

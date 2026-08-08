@@ -1,0 +1,12 @@
+/* A teal accent instead of Starlight's default purple. */
+:root {
+	--sl-color-accent-low: #16332c;
+	--sl-color-accent: #2bcc9e;
+	--sl-color-accent-high: #bdf5e2;
+}
+
+:root[data-theme='light'] {
+	--sl-color-accent-low: #d2f5e8;
+	--sl-color-accent: #0d8f68;
+	--sl-color-accent-high: #123d2d;
+}
