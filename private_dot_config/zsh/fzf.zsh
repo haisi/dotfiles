@@ -58,12 +58,29 @@ export _FZF_PREVIEW_CMD="${_fzf_preview_prefix}case {} in
 esac"
 export FZF_CTRL_T_OPTS="--preview '$_FZF_PREVIEW_CMD'"
 
+# Clears any leftover Kitty-protocol image placement (see above) once an fzf
+# session ends, however it ended (Enter, ESC, Ctrl-C) -- fzf itself never
+# re-invokes the preview command on exit, so without this the last previewed
+# image just keeps floating on screen after fzf closes.
+_fzf_clear_kitty_image() {
+  [[ -n "$_fzf_kitty_img_clear" ]] && printf "%s" "$_fzf_kitty_img_clear"
+}
+
 # Ctrl+F: file picker excluding hidden files
 _fzf_file_no_hidden() {
   local cmd result
   cmd="${FZF_DEFAULT_COMMAND/--hidden /}"
   result=$(eval "${cmd:-find . -type f}" | fzf --preview "$_FZF_PREVIEW_CMD") \
     && LBUFFER+="$result"  # LBUFFER is the text left of the cursor
+  _fzf_clear_kitty_image
   zle reset-prompt
 }
 zle -N _fzf_file_no_hidden
+
+# Ctrl+T: wrap fzf's own file widget to also clear a leftover image preview
+# on exit (see _fzf_clear_kitty_image above).
+_fzf_file_widget_and_clear() {
+  fzf-file-widget
+  _fzf_clear_kitty_image
+}
+zle -N _fzf_file_widget_and_clear
