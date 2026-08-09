@@ -21,8 +21,9 @@ That last command:
 
 The playbook handles everything else: zsh (and setting it as the login shell), fzf,
 bat, eza, fd-find, ripgrep, starship, lf, chafa, ghostty, the GitHub CLI, Docker,
-mise (with Node LTS and JDK 25), zoxide, herdr, htop, i3 + rofi, and the
-JetBrainsMono Nerd Font. You'll be prompted for your sudo password exactly once.
+mise (with Node LTS and JDK 25), zoxide, herdr, htop, i3 + rofi, Spotify,
+IntelliJ IDEA Ultimate, and the JetBrainsMono Nerd Font. You'll be prompted for your
+sudo password exactly once.
 
 :::note[Laptop hardware]
 On a laptop, the same playbook also installs `brightnessctl` and wires up

@@ -15,6 +15,8 @@ private_dot_config/
   ghostty/                        → ~/.config/ghostty/
   lf/                             → ~/.config/lf/
   herdr/                          → ~/.config/herdr/
+  rofi/                           → ~/.config/rofi/
+dot_local/bin/                    → ~/.local/bin/ (personal scripts/wrappers)
 CLAUDE.md                         → ~/CLAUDE.md (no prefix needed, no leading dot)
 docs/                             This documentation site (ignored by chezmoi, see below)
 ```

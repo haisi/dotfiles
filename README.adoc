@@ -23,7 +23,8 @@ That last command clones this repo, applies all dotfiles, and — via
 `run_onchange_bootstrap.sh.tmpl` — installs Ansible (if missing) and runs
 `dot_bootstrap/setup.yml` as root, which handles everything else: zsh (+
 setting it as the login shell), fzf, bat, eza, fd-find, ripgrep, starship,
-lf, chafa, ghostty, the GitHub CLI, zoxide, herdr, htop, and the
+lf, chafa, ghostty, the GitHub CLI, Docker, mise (with Node LTS and JDK 25),
+zoxide, herdr, htop, i3 + rofi, Spotify, IntelliJ IDEA Ultimate, and the
 JetBrainsMono Nerd Font. It will prompt for your sudo password once.
 
 == Changing installed tools

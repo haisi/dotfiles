@@ -31,6 +31,11 @@ lf   → wraps the lf file manager so quitting `cd`s the shell into lf's last di
 `EDITOR`/`VISUAL` are `nvim`, and `MANPAGER` uses `bat`/`batcat` for syntax-highlighted
 man pages when either is on `PATH`.
 
+`HISTFILE` lives under `$XDG_STATE_HOME/zsh/history`, but zsh doesn't create missing
+parent directories for it — on a fresh `$XDG_STATE_HOME` that directory never existed,
+so every shell silently failed to write history instead of sharing it via
+`SHARE_HISTORY`. `dot_zshrc` now `mkdir -p`s it before `HISTFILE` is set.
+
 ## Ghostty
 
 The terminal is [Ghostty](https://ghostty.org). Its config pins the shell explicitly:
