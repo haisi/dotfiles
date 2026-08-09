@@ -205,6 +205,13 @@
         state: present
         update_cache: true
 
+    # --- IntelliJ IDEA Ultimate (not in Ubuntu's default repos; installed via snap) ---
+    - name: Install IntelliJ IDEA Ultimate
+      community.general.snap:
+        name: intellij-idea-ultimate
+        classic: true
+        state: present
+
     # --- zoxide (installs to ~/.local/bin, has no apt package) ---
     - name: Check if zoxide is installed
       ansible.builtin.stat:
