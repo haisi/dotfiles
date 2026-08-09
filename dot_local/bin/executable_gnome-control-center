@@ -1,0 +1,9 @@
+#!/bin/sh
+# gnome-control-center refuses to run unless XDG_CURRENT_DESKTOP contains
+# "GNOME" or "Unity" (checked via strstr in shell/cc-application.c). i3 sets
+# XDG_CURRENT_DESKTOP=i3, so it exits immediately with "Running
+# gnome-control-center is only supported under GNOME and Unity, exiting".
+# The check is cosmetic: gnome-settings-daemon's D-Bus services activate on
+# demand regardless of desktop, so overriding just this child process's env
+# is enough to run the real panels (Wi-Fi included) under i3 as-is.
+exec env XDG_CURRENT_DESKTOP=GNOME /usr/bin/gnome-control-center "$@"
